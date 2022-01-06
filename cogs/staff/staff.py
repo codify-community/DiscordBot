@@ -226,5 +226,6 @@ class Staff(commands.Cog):
         for i in obj:
             if i['id'] == ctx.author.id:
                 i[type] = content
+        await ctx.send('editado com sucesso, eu acho kkk')
 def setup(bot):
     bot.add_cog(Staff(bot))
