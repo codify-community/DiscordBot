@@ -32,7 +32,7 @@ async def on_ready():
     while True:
         await bot.change_presence(status=discord.Status.online, activity=discord.Game(name="Codify Community", type=3))
         await asyncio.sleep(30)
-        await bot.change_presence(status=discord.Status.online, activity=discord.Game(name=".help | discord.gg/codify", type=3))
+        await bot.change_presence(status=discord.Status.online, activity=discord.Game(name=".help | discord.gg/MSr8SJfR4H", type=3))
         await asyncio.sleep(30)
         await bot.change_presence(status=discord.Status.online, activity=discord.Game(name="Beta 0.0.1", type=3))
         await asyncio.sleep(30)
