@@ -90,14 +90,10 @@ class Eventos(commands.Cog):
     @tasks.loop(minutes=1)
     async def add_xp():
         premio_temp = tuple(premio)
-        print ('premio1:',premio)
-        print ('temp1:',premio_temp)
         if len(premio) >= 1:
             r_xp = randint(15, 25)
             premio.clear()
             conta.update_many({'_id':{'$in':premio_temp}}, {'$inc': {'xp': r_xp}})
-            print ('premio2:',premio)
-            print ('temp2:',premio_temp)
     add_xp.start()
 
 def setup(bot):
