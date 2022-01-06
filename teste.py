@@ -1,6 +1,3 @@
-from utils.mongoconnect import mongoConnect
-
-cluster = mongoConnect()
-db = cluster['discord']
-conta = db['conta']
-site = db['site']
+teste = '1, 2, 3'
+print(type(teste))
+teste = teste.split(', ')
