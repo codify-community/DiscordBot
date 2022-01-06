@@ -4,3 +4,6 @@ cluster = mongoConnect()
 db = cluster['discord']
 conta = db['conta']
 site = db['site']
+
+for i in site.find():
+    print(i)

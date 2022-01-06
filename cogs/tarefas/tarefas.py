@@ -6,7 +6,7 @@ from utils.mongoconnect import mongoConnect
   
 cluster = mongoConnect()
 db = cluster['codify']
-site = ['site']
+site = db['site']
 logs = db['logs']
 
 class Tarefas(commands.Cog):
