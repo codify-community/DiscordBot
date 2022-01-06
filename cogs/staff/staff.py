@@ -7,6 +7,7 @@ from utils.mongoconnect import mongoConnect
 cluster = mongoConnect()
 db = cluster['codify']
 conta = db['conta']
+site = db['site']
 
 class Staff(commands.Cog):
     def __init__(self, bot):
@@ -199,6 +200,31 @@ class Staff(commands.Cog):
             await ctx.send(embed=embed)
 
 
-
+    #edit user info on website
+    @commands.command()
+    @commands.has_permissions(kick_members=True) 
+    async def set(self, ctx, type : str = None, *, content=None):
+        if type == None:
+            await ctx.send(embed=discord.Embed(description='Você precisa informar o tipo de informação que deseja alterar. Ex: .set user_name @jv', color=0xff0000))
+            return
+        if content == None:
+            await ctx.send(embed=discord.Embed(description='Você precisa informar o novo valor. Ex: .set user_name @jv', color=0xff0000))
+            return
+        if type == 'habilidades' and not '[' in content:
+            await ctx.send(embed=discord.Embed(description='Você precisa informar as habilidades separadas por vírgula. Ex: .set habilidades Python, Java', color=0xff0000))
+            return
+        role = discord.utils.get(ctx.guild.roles, name=ctx.author.name)
+        if type == 'habilidades':
+            content = content.split(', ')
+        if 'Mod' in role:
+            role = 'mods'
+        elif 'Admin' in role:
+            role = 'admins'
+        else:
+            return
+        obj = site.find_one({'_id':1})[role]
+        for i in obj:
+            if i['id'] == ctx.author.id:
+                i[type] = content
 def setup(bot):
     bot.add_cog(Staff(bot))
