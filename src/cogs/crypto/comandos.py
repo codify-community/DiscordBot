@@ -81,25 +81,37 @@ class CryptoExtension(Extension):
         await it.respond(embed=embed)
 
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você pode vender suas cryptomoedas")
-    async def vender(self, it: ApplicationContext):
-        account = DataBaseUser(it.author.id)
-        pass
+    async def vender(self, it: ApplicationContext,
+                     moeda: Option(str, "A Moeda que você quer comprar", default="BTC", choices=cryptos),
+                     quantidade: Option(int, "Quantidade de moedas que você quer comprar", default=1)):
+        if quantidade < 1:
+            return await it.respond("Você não pode vender menos de 1 moeda!")
+        msg = await it.respond(":stopwatch: **·** Aguarde um momento, estamos vendendo suas cryptos...")
+        user = DataBaseUser(it.author.id)
+        status = await user.sell_coins(
+            moeda, self.cache[moeda].lastPrice, quantidade)
+        if status != True:
+            await msg.edit_original_message(content=f"{status}")
+        else:
+            await msg.edit_original_message(content=f"Você vendeu {quantidade} {moeda} por R${self.cache[moeda].lastPrice * quantidade:.2f}")
 
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você pode comprar suas cryptomoedas")
-    async def comprar(self, it: ApplicationContext, 
-            moeda: Option(str, "A Moeda que você quer comprar", default="BTC", choices=cryptos),
-            quantidade: Option(int, "Quantidade de moedas que você quer comprar", default=1)):
+    async def comprar(self, it: ApplicationContext,
+                      moeda: Option(str, "A Moeda que você quer comprar", default="BTC", choices=cryptos),
+                      quantidade: Option(int, "Quantidade de moedas que você quer comprar", default=1)):
+        msg = await it.respond(":stopwatch: **·** Estou processando a sua compra. Isso Pode Demorar...*")
         if quantidade < 1:
-            return await it.respond("Você não pode menos de 1 moeda!")
+            return await it.respond("Você não pode comprar menos de 1 moeda!")
         account = DataBaseUser(it.author.id)
         status = await account.buy_coin(moeda, self.cache[moeda].lastPrice, quantidade)
         if status != True:
-            await it.respond(status)
+            await msg.edit_original_message(content=status)
         else:
-            await it.respond(f"Você comprou {quantidade} {moeda}(s) por `R${self.cache[moeda].lastPrice * quantidade:.2f}`")
+            await msg.edit_original_message(content=f"Você comprou {quantidade} {moeda}(s) por `R${self.cache[moeda].lastPrice * quantidade:.2f}`")
 
-    @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você vê quanto reis você tem")
+    @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você vê quanto reais você tem")
     async def saldo(self, it: ApplicationContext, user: Option(Member, "Membro", required=False)):
+        msg = await it.respond("*:stopwatch: **·** Procurando pelo jv...*")
         acc = user or it.author
         account = DataBaseUser(acc.id)
         reais = await account.get_reais_count()
@@ -107,22 +119,26 @@ class CryptoExtension(Extension):
         embed = Embed(title=f"Saldo de {usr}" if acc !=
                       it.author else "Seu Saldo", color=0x738ADB)
         embed.description = f"{'Você' if acc == it.author else usr } tem `R${reais}`"
-        await it.respond(embed=embed)
+        await msg.edit_original_message(embed=embed, content="Pronto!")
+
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você vê quanto reis você tem")
     async def carteira(self, it: ApplicationContext, user: Option(Member, "Membro", required=False)):
+        msg = await it.respond(":stopwatch: **·** *Procurando pelo jv...*")
         acc = user or it.author
         account = DataBaseUser(acc.id)
         usr = acc.nick or acc.name
         embed = Embed(title=f"Carteira de {usr}" if acc !=
                       it.author else "Sua Carteira", color=0x738ADB)
         wallet = await account.get_wallet()
-        coins_str = '\n'.join([f'{key} - {wallet[key]} moeda(s)' for key in wallet.keys()]);
+        coins_str = '\n'.join(
+            [f'{key} - {wallet[key]} moeda(s)' for key in wallet.keys()])
         if wallet == {}:
             embed.description = f"{'Você' if acc == it.author else usr }  não tem nenhuma moeda em sua carteira"
         else:
             embed.description = f"""{'Você' if acc == it.author else usr } tem:
             {coins_str}"""
-        await it.respond(embed=embed)
+        await msg.edit_original_message(embed=embed, content="Pronto!")
+
     @Extension.listener()
     async def on_ready(self):
         self.upd_cache.start()
@@ -130,4 +146,3 @@ class CryptoExtension(Extension):
 
 def setup(bot):
     bot.add_cog(CryptoExtension(bot))
-
