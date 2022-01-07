@@ -21,7 +21,6 @@ class CryptoCached:
         self.lastPrice = lastPrice
         self.priceChangePercent = priceChangePercent
         self.name = name
-      
 
 
 cryptos = {'BTC': 'BTCBRL', 'ETH': 'ETHBRL', 'BNB': 'BNBBRL', 'LTC': 'LTCBRL',
@@ -80,18 +79,49 @@ class CryptoExtension(Extension):
         embed.set_footer(text="Servidor Codify Community",
                          icon_url="https://cdn.discordapp.com/avatars/851618408965079070/dcaa7982cda5fc926064df5edb923aef.png?size=2048")
         await it.respond(embed=embed)
+
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você pode vender suas cryptomoedas")
     async def vender(self, it: ApplicationContext):
         account = DataBaseUser(it.author.id)
         pass
+
+    @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você pode comprar suas cryptomoedas")
+    async def comprar(self, it: ApplicationContext, 
+            moeda: Option(str, "A Moeda que você quer comprar", default="BTC", choices=cryptos),
+            quantidade: Option(int, "Quantidade de moedas que você quer comprar", default=1)):
+        if quantidade < 1:
+            return await it.respond("Você não pode menos de 1 moeda!")
+        account = DataBaseUser(it.author.id)
+        status = await account.buy_coin(moeda, self.cache[moeda].lastPrice, quantidade)
+        if status != True:
+            await it.respond(status)
+        else:
+            await it.respond(f"Você comprou {quantidade} {moeda}(s) por `R${self.cache[moeda].lastPrice * quantidade:.2f}`")
+
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você vê quanto reis você tem")
     async def saldo(self, it: ApplicationContext, user: Option(Member, "Membro", required=False)):
         acc = user or it.author
-        account = DataBaseUser(acc.id or acc.id)
+        account = DataBaseUser(acc.id)
         reais = await account.get_reais_count()
         usr = acc.nick or acc.name
-        embed = Embed(title=f"Saldo de {usr}", color=0x738ADB)
-        embed.description = f"{'Você' if acc == it.author else usr } tem {reais} reais"
+        embed = Embed(title=f"Saldo de {usr}" if acc !=
+                      it.author else "Seu Saldo", color=0x738ADB)
+        embed.description = f"{'Você' if acc == it.author else usr } tem `R${reais}`"
+        await it.respond(embed=embed)
+    @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você vê quanto reis você tem")
+    async def carteira(self, it: ApplicationContext, user: Option(Member, "Membro", required=False)):
+        acc = user or it.author
+        account = DataBaseUser(acc.id)
+        usr = acc.nick or acc.name
+        embed = Embed(title=f"Carteira de {usr}" if acc !=
+                      it.author else "Sua Carteira", color=0x738ADB)
+        wallet = await account.get_wallet()
+        coins_str = '\n'.join([f'{key} - {wallet[key]} moeda(s)' for key in wallet.keys()]);
+        if wallet == {}:
+            embed.description = f"{'Você' if acc == it.author else usr }  não tem nenhuma moeda em sua carteira"
+        else:
+            embed.description = f"""{'Você' if acc == it.author else usr } tem:
+            {coins_str}"""
         await it.respond(embed=embed)
     @Extension.listener()
     async def on_ready(self):
@@ -100,3 +130,4 @@ class CryptoExtension(Extension):
 
 def setup(bot):
     bot.add_cog(CryptoExtension(bot))
+
