@@ -1,5 +1,7 @@
-discord.py
-pymongo
+git+https://github.com/Pycord-Development/pycord.git
+motor
 dnspython
 python-dotenv
-requests
+aiohttp
+psutil
+pymongo # para intellisense
