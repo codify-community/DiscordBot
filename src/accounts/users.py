@@ -35,7 +35,7 @@ class DataBaseUser:
     async def get_wallet(self):
         await self._injector()
         user = await self.accounts.find_one({'userID': self.userID})
-        return user['wallet']
+        return user['wallet'].filter()
 
     async def _add_coin_to_user_wallet(self, preco: int, coin: str, amount: float):
         await self._injector()
@@ -123,7 +123,7 @@ class DataBaseUser:
         required = await self.get_xp_required_for_next_level()
         logging.getLogger(__name__).info("XP: " + str(xp) + " | Required: " + str(required) + "\n\t| User: "
                                          + str(self.userID))
-        if amount > 64:
+        if amount < 64:
             amount = 64
         if required <= 0:  # level up
             await self.increase_level_by(1)

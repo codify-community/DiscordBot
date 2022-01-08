@@ -70,8 +70,7 @@ class LevelCommandos(Extension):
         for i, u in enumerate(pages[pagina - 1]):
             user = guild.get_member(u.userID)
             if user is not None and await u.get_reais_count() > 0:
-
-                embed.description += f"{i + 1}. [{user.nick}#{user.discriminator}](https://discord.com/users/{user.id})" \
+                embed.description += f"{i + 1}. [{user.name}#{user.discriminator}](https://discord.com/users/{user.id})" \
                                      f" - `R$ {await u.get_reais_count():.2f}`\n"
         await it.respond(embed=embed)
 
@@ -93,9 +92,8 @@ class LevelCommandos(Extension):
             user = guild.get_member(u.userID)
             if user is not None and await u.get_level() > 0:
 
-                embed.description += f"{i + 1}. [{user.nick}#{user.discriminator}](https://discord.com/users/{user.id})" \
+                embed.description += f"{i + 1}. [{user.name}#{user.discriminator}](https://discord.com/users/{user.id})" \
                                      f" - `Nível: {await u.get_level()}`\n"
-        await it.respond(embed=embed)
         await it.respond(embed=embed)
 
 
