@@ -120,7 +120,7 @@ class CryptoExtension(Extension):
         account = DataBaseUser(it.author.id)
         
         if quantidade <= 0:
-            quantidade = await account.get_reais_count() / self.cache[moeda].lastPrice        
+            quantidade = await account.get_reais_count() / await account.get_price_after_discount(moeda, self.cache[moeda].lastPrice)        
         
         status = await account.buy_coin(moeda, self.cache[moeda].lastPrice, quantidade)
         
@@ -130,7 +130,7 @@ class CryptoExtension(Extension):
         else:
             
             embed = Embed(color=0x738ADB,
-                          description=f"Você comprou {quantidade} {moeda}(s) por `R${self.cache[moeda].lastPrice * quantidade:.2f}`")
+                          description=f"Você comprou {quantidade} {moeda}(s) por `R${await account.get_price_after_discount(moeda, self.cache[moeda].lastPrice) * quantidade:.2f}`")
             
             await it.send_response(embed=embed)
 

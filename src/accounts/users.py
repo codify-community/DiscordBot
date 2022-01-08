@@ -71,7 +71,7 @@ class DataBaseUser:
         await self._injector()
         lvl = await self.get_level()
         max_lvl = 500 if lvl > 500 else lvl # 500 is the max level to get shit
-        return max_lvl
+        return coin_price - coin_price / (0.05 * max_lvl) 
     async def buy_coin(self, coin: str, coin_price: int, amount: float):
     
         await self._injector()
@@ -81,14 +81,14 @@ class DataBaseUser:
         max_lvl = 500 if lvl > 500 else lvl # 500 is the max level to get shit
 
         price_after_discount = await self.get_price_after_discount(coin, coin_price)
-        print(f"{price_after_discount}")
-        if user['reaisCount'] < amount * coin_price:
+        print(f"PREÇO:::::: {price_after_discount} {coin_price}")
+        if user['reaisCount'] < amount * price_after_discount:
             return "Você não tem reais suficientes para comprar essa quantidade de moedas."
         else:
          
-            await self._inc_user_coins(-(amount * coin_price))
+            await self._inc_user_coins(-(amount * price_after_discount))
             
-            await self._add_coin_to_user_wallet(coin_price, coin, amount)
+            await self._add_coin_to_user_wallet(price_after_discount, coin, amount)
             return True
 
     async def transfer_reais(self, userID: int, amount: float):
