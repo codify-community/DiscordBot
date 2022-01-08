@@ -1,6 +1,6 @@
 from src.database import database
 from pymongo.database import Database
-
+import random
 
 class DataBaseUser:
     def __init__(self, userID):
@@ -48,7 +48,7 @@ class DataBaseUser:
         await self._injector()
         user = await self.accounts.find_one({'userID': self.userID})
         if coin not in user['wallet'] or user['wallet'][coin] < amount:
-            return "Você não tem moedas suficientes para vender essa quantidade."
+            return f"Você não tem {coin} suficientes para vender essa quantidade."
         else:
             await self._remove_coins_to_user_wallet(coin_price, coin, amount)
             await self._inc_user_coins(amount * coin_price)
@@ -62,3 +62,17 @@ class DataBaseUser:
             await self._inc_user_coins(-(amount * coin_price))
             await self._add_coin_to_user_wallet(coin_price, coin, amount)
             return True
+    async def transfer_reais(self, userID: int, amount: int):
+        await self._injector()
+        user = await self.accounts.find_one({'userID': self.userID})
+        if user['reaisCount'] < amount:
+            return "Você não tem reais suficientes para transferir essa quantidade de moedas."
+        else:
+            await self._inc_user_coins(-amount)
+            user = DataBaseUser(userID)
+            await user._inc_user_coins(amount)
+            return True
+    async def daily(self) -> int:
+        rand = random.randint(10, 100)
+        await self._inc_user_coins(rand)
+        return rand
