@@ -7,7 +7,7 @@ dotenv.load_dotenv()
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
-bot = discord.Bot()
+bot = discord.Bot(intents=discord.Intents.all())
 config = Config()
 if config.isOnDevEnv:
     logging.warning("Bot is running on development environment")
