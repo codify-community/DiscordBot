@@ -1,5 +1,8 @@
 import os
+
 import psutil
+
+
 def get_current_memory_usage_by_python() -> str:
     """
     Returns the current memory usage of the process in MB.

@@ -1,17 +1,21 @@
+import logging
+
+from discord import Client
 from discord import Cog as Extension
 from discord.commands import slash_command
 from discord.commands.context import ApplicationContext
-from src.utils import proc
-from src.config import Config
-from discord import Client
-import logging
-
 from discord.embeds import Embed
+
+from src.config import Config
+from src.utils import proc
+
+
 class GeralExtension(Extension):
     def __init__(self, bot: Client):
         self.bot = bot
         self.config = Config()
         self.logger = logging.getLogger(__name__)
+
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando você pode ver minhas informações!")
     async def status(self, it: ApplicationContext):
         embed = Embed()
@@ -24,7 +28,10 @@ class GeralExtension(Extension):
         :satellite: **·** Latência: [{self.bot.latency * 1000:.2f}ms](https://codifycommunity.tk)
         :robot: **·** Versão atual: [{self.config.version}](https://codifycommunity.tk)
         """
-        embed.set_footer(text="Servidor Codify Community", icon_url="https://cdn.discordapp.com/avatars/851618408965079070/dcaa7982cda5fc926064df5edb923aef.png?size=2048")
+        embed.set_footer(text="Servidor Codify Community",
+                         icon_url="https://cdn.discordapp.com/avatars/851618408965079070/dcaa7982cda5fc926064df5edb923aef.png?size=2048")
         await it.respond(embed=embed)
+
+
 def setup(bot):
     bot.add_cog(GeralExtension(bot))

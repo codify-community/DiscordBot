@@ -1,8 +1,11 @@
 import os
+
+
 class Config:
     """
     The abstration based on bot dotenv
     """
+
     def __init__(self):
         self.token = os.getenv("DISCORD_TOKEN")
         self.statusWebhook = os.getenv("DISCORD_WEBHOOK")

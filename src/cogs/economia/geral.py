@@ -1,21 +1,25 @@
-from discord import Cog as Extension
-from discord import Client
-from discord.embeds import Embed
-from discord.ext.commands.cooldowns import BucketType
-from src.config import Config
-from src.accounts.users import DataBaseUser
-from discord.commands import Option
-from discord.commands.context import ApplicationContext
-from discord.commands import slash_command
-from datetime import datetime, timedelta
-from discord import Member
 import logging
+from datetime import datetime, timedelta
+
+from discord import Client
+from discord import Cog as Extension
+from discord import Member
+from discord.commands import Option
+from discord.commands import slash_command
+from discord.commands.context import ApplicationContext
+from discord.embeds import Embed
+
+from src.accounts.users import DataBaseUser
+from src.config import Config
+
+
 class EconomiaGeral(Extension):
     def __init__(self, bot: Client):
         self.bot = bot
         self.logger = logging.getLogger(__name__)
         self.cache = {}
         self.config = Config()
+
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você vê quanto reais você tem")
     async def saldo(self, it: ApplicationContext, user: Option(Member, "Membro", required=False)):
         acc = user or it.author
@@ -23,26 +27,29 @@ class EconomiaGeral(Extension):
         reais = await account.get_reais_count()
         usr = acc.nick or acc.name
         embed = Embed(title=f"Saldo de {usr}" if acc !=
-                      it.author else "Seu Saldo", color=0x738ADB)
-        embed.description = f"{'Você' if acc == it.author else usr } tem `R$ {reais:.2f}`"
+                                                 it.author else "Seu Saldo", color=0x738ADB)
+        embed.description = f"{'Você' if acc == it.author else usr} tem `R$ {reais:.2f}`"
         embed.set_footer(text="Servidor Codify Community",
                          icon_url="https://cdn.discordapp.com/avatars/851618408965079070/dcaa7982cda5fc926064df5edb923aef.png?size=2048")
         await it.send_response(embed=embed)
+
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você pode transferir seus reais")
-    async def tranferir(self, it: ApplicationContext,
-         membro: Option(Member, "Membro para transferir"), quantidade: Option(int, "quantidade")):
+    async def transferir(self, it: ApplicationContext,
+                         membro: Option(Member, "Membro para transferir"), quantidade: Option(float, "quantidade")):
         self.logger.info(f"{it.author.id} tentou transferir {quantidade} reais para {membro.id}")
-        if quantidade < 1:
-            return await it.respond("Você não pode transferir menos de 1 real!")
+        if quantidade < 0:
+            return await it.respond("Você não pode transferir valores negativos!")
         account = DataBaseUser(it.author.id)
         status = await account.transfer_reais(membro.id, quantidade)
         if status != True:
             await it.send_response(content=status, ephemeral=True)
         else:
-            embed = Embed(color=0x738ADB, description=f"Você transferiu `R$ {quantidade}` para {membro.name}")
+
+            embed = Embed(color=0x738ADB, description=f"Você transferiu `R$ {quantidade}` para {membro}")
             embed.set_footer(text="Servidor Codify Community",
-                         icon_url="https://cdn.discordapp.com/avatars/851618408965079070/dcaa7982cda5fc926064df5edb923aef.png?size=2048")
+                             icon_url="https://cdn.discordapp.com/avatars/851618408965079070/dcaa7982cda5fc926064df5edb923aef.png?size=2048")
             await it.send_response(embed=embed)
+
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você pode pegar sua diaria")
     async def diaria(self, it: ApplicationContext):
         if it.author.id in self.cache:
@@ -56,7 +63,7 @@ class EconomiaGeral(Extension):
         user = DataBaseUser(it.author.id)
         qnt = await user.daily()
         await it.send_response(content=f"Você recebeu `R$ {qnt}` de diaria!")
-    
+
 
 def setup(bot: Client):
     bot.add_cog(EconomiaGeral(bot))
