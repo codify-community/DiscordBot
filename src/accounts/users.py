@@ -25,7 +25,7 @@ class DataBaseUser:
         user = await self.accounts.find_one({'userID': self.userID})
         return user['reaisCount']
 
-    async def _inc_user_coins(self, amount: int):
+    async def _inc_user_coins(self, amount: float):
         await self._injector()
         user = await self.accounts.find_one({'userID': self.userID})
 
@@ -37,13 +37,12 @@ class DataBaseUser:
         user = await self.accounts.find_one({'userID': self.userID})
         return user['wallet']
 
-    async def _add_coin_to_user_wallet(self, preco: int, coin: str, amount: int):
+    async def _add_coin_to_user_wallet(self, preco: int, coin: str, amount: float):
         await self._injector()
         user = await self.accounts.find_one({'userID': self.userID})
         if coin not in user['wallet']:
             user['wallet'][coin] = 0
-        for i in range(amount):
-            user['wallet'][coin] += 1
+        user['wallet'][coin] += amount
         await self.accounts.update_one({'userID': self.userID}, {'$set': {'wallet': user['wallet']}})
         return True
 
@@ -59,7 +58,7 @@ class DataBaseUser:
             await self.accounts.update_one({'userID': self.userID}, {'$set': {'wallet': user['wallet']}})
             return True
 
-    async def sell_coins(self, coin: str, coin_price: int, amount: int):
+    async def sell_coins(self, coin: str, coin_price: int, amount: float):
         await self._injector()
         user = await self.accounts.find_one({'userID': self.userID})
         if coin not in user['wallet'] or user['wallet'][coin] < amount:
@@ -69,17 +68,22 @@ class DataBaseUser:
             await self._inc_user_coins(amount * coin_price)
             return True
 
-    async def buy_coin(self, coin: str, coin_price: int, amount: int):
+    async def buy_coin(self, coin: str, coin_price: int, amount: float):
+    
         await self._injector()
+        
         user = await self.accounts.find_one({'userID': self.userID})
+
         if user['reaisCount'] < amount * coin_price:
             return "Você não tem reais suficientes para comprar essa quantidade de moedas."
         else:
+         
             await self._inc_user_coins(-(amount * coin_price))
+            
             await self._add_coin_to_user_wallet(coin_price, coin, amount)
             return True
 
-    async def transfer_reais(self, userID: int, amount: int):
+    async def transfer_reais(self, userID: int, amount: float):
         await self._injector()
         user = await self.accounts.find_one({'userID': self.userID})
         if user['reaisCount'] < amount:
