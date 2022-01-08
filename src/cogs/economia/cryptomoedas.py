@@ -123,12 +123,18 @@ class CryptoExtension(Extension):
                       it.author else "Sua Carteira", color=0x738ADB)
         wallet = await account.get_wallet()
         coins_str = '\n'.join(
-            [f'{key} - {wallet[key]} moeda(s)' for key in wallet.keys()])
+            [f'> {key} - `{wallet[key]}` moeda(s)' for key in wallet.keys()])
+        estimativa = sum([wallet[key] * self.cache[key].lastPrice for key in wallet.keys()])
         if wallet == {}:
             embed.description = f"{'Você' if acc == it.author else usr }  não tem nenhuma moeda em sua carteira"
         else:
             embed.description = f"""{'Você' if acc == it.author else usr } tem:
-            {coins_str}"""
+            {coins_str}
+            Estimativa: `R$ {estimativa:.2f}`
+            """
+        embed.set_thumbnail(url='https://media.discordapp.net/attachments/760531609261834250/929335772715315240/emoji.png')
+        embed.set_footer(text="Servidor Codify Community",
+                         icon_url="https://cdn.discordapp.com/avatars/851618408965079070/dcaa7982cda5fc926064df5edb923aef.png?size=2048")
         await it.respond(embed=embed)
 
     @Extension.listener()

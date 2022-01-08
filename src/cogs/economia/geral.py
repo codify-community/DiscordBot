@@ -24,20 +24,24 @@ class EconomiaGeral(Extension):
         usr = acc.nick or acc.name
         embed = Embed(title=f"Saldo de {usr}" if acc !=
                       it.author else "Seu Saldo", color=0x738ADB)
-        embed.description = f"{'Você' if acc == it.author else usr } tem `R${reais}`"
+        embed.description = f"{'Você' if acc == it.author else usr } tem `R$ {reais:.2f}`"
+        embed.set_footer(text="Servidor Codify Community",
+                         icon_url="https://cdn.discordapp.com/avatars/851618408965079070/dcaa7982cda5fc926064df5edb923aef.png?size=2048")
         await it.send_response(embed=embed)
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você pode transferir seus reais")
     async def tranferir(self, it: ApplicationContext,
          membro: Option(Member, "Membro para transferir"), quantidade: Option(int, "quantidade")):
         self.logger.info(f"{it.author.id} tentou transferir {quantidade} reais para {membro.id}")
         if quantidade < 1:
-            return await it.respond("Você não pode transferir menos de 1 reais!")
+            return await it.respond("Você não pode transferir menos de 1 real!")
         account = DataBaseUser(it.author.id)
         status = await account.transfer_reais(membro.id, quantidade)
         if status != True:
             await it.send_response(content=status, ephemeral=True)
         else:
-            embed = Embed(color=0x738ADB, description=f"Você transferiu `R${quantidade}` para {membro.name}")
+            embed = Embed(color=0x738ADB, description=f"Você transferiu `R$ {quantidade}` para {membro.name}")
+            embed.set_footer(text="Servidor Codify Community",
+                         icon_url="https://cdn.discordapp.com/avatars/851618408965079070/dcaa7982cda5fc926064df5edb923aef.png?size=2048")
             await it.send_response(embed=embed)
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você pode pegar sua diaria")
     async def diaria(self, it: ApplicationContext):
@@ -51,7 +55,7 @@ class EconomiaGeral(Extension):
             self.cache[it.author.id] = datetime.today()
         user = DataBaseUser(it.author.id)
         qnt = await user.daily()
-        await it.send_response(content=f"Você recebeu `R${qnt}` de diaria!")
+        await it.send_response(content=f"Você recebeu `R$ {qnt}` de diaria!")
     
 
 def setup(bot: Client):
