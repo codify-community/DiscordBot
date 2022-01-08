@@ -98,10 +98,11 @@ class CryptoExtension(Extension):
     async def vender(self, it: ApplicationContext,
                      moeda: Option(str, "A Moeda que você quer comprar", default="BTC", choices=cryptos),
                      quantidade: Option(float, "Quantidade de moedas que você quer comprar", default=1.0)):
-
-        if quantidade <= 0:
-            return await it.respond("Você não pode vender menos de 1 moeda!", ephemeral=True)
         user = DataBaseUser(it.author.id)
+        if quantidade <= 0:
+            quantidade = (await user.get_wallet())[moeda]
+            
+        
         status = await user.sell_coins(
             moeda, self.cache[moeda].lastPrice, quantidade)
         if status != True:
@@ -116,10 +117,10 @@ class CryptoExtension(Extension):
                       moeda: Option(str, "A Moeda que você quer comprar", default="BTC", choices=cryptos),
                       quantidade: Option(float, "Quantidade de moedas que você quer comprar", default=1.0, Required=False)):
         
-        if quantidade <= 0:
-            return await it.respond("Você não pode comprar 0 moedas!")
-        
         account = DataBaseUser(it.author.id)
+        
+        if quantidade <= 0:
+            quantidade = await account.get_reais_count() / self.cache[moeda].lastPrice        
         
         status = await account.buy_coin(moeda, self.cache[moeda].lastPrice, quantidade)
         
