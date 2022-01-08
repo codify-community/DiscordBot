@@ -1,6 +1,7 @@
 import logging
 import random
 from datetime import datetime
+from typing_extensions import Required
 
 # async supremacy
 import aiohttp
@@ -96,9 +97,9 @@ class CryptoExtension(Extension):
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você pode vender suas cryptomoedas")
     async def vender(self, it: ApplicationContext,
                      moeda: Option(str, "A Moeda que você quer comprar", default="BTC", choices=cryptos),
-                     quantidade: Option(int, "Quantidade de moedas que você quer comprar", default=1)):
+                     quantidade: Option(float, "Quantidade de moedas que você quer comprar", default=1.0)):
 
-        if quantidade < 1:
+        if quantidade <= 0:
             return await it.respond("Você não pode vender menos de 1 moeda!", ephemeral=True)
         user = DataBaseUser(it.author.id)
         status = await user.sell_coins(
@@ -113,21 +114,26 @@ class CryptoExtension(Extension):
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você pode comprar suas cryptomoedas")
     async def comprar(self, it: ApplicationContext,
                       moeda: Option(str, "A Moeda que você quer comprar", default="BTC", choices=cryptos),
-                      quantidade: Option(int, "Quantidade de moedas que você quer comprar", default=1)):
-
-        if quantidade < 1:
-            return await it.respond("Você não pode comprar menos de 1 moeda!")
+                      quantidade: Option(float, "Quantidade de moedas que você quer comprar", default=1.0, Required=False)):
+        
+        if quantidade <= 0:
+            return await it.respond("Você não pode comprar 0 moedas!")
+        
         account = DataBaseUser(it.author.id)
+        
         status = await account.buy_coin(moeda, self.cache[moeda].lastPrice, quantidade)
+        
         if status != True:
+           
             await it.send_response(content=status, ephemeral=True)
         else:
+            
             embed = Embed(color=0x738ADB,
                           description=f"Você comprou {quantidade} {moeda}(s) por `R${self.cache[moeda].lastPrice * quantidade:.2f}`")
-
+            
             await it.send_response(embed=embed)
 
-    @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você vê quanto reis você tem")
+    @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você vê quanto reais você tem") # nequinha pro monarquia, REIS inves de REAIS!!!!
     async def carteira(self, it: ApplicationContext, user: Option(Member, "Membro", required=False)):
         acc = user or it.author
         account = DataBaseUser(acc.id)

@@ -4,4 +4,4 @@ dnspython
 python-dotenv
 aiohttp
 psutil
-pymongo # para intellisense
+pymongo
