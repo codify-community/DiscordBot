@@ -74,7 +74,7 @@ class DataBaseUser:
         max_lvl = 500 if lvl > 500 else lvl  # 500 is the max level to get shit
         # é velho tem q ter IF se não vai dar merda kek
         if max_lvl == 0:
-            max_lvl = 1
+            return coin_price
         return round(coin_price - ((0.05 * max_lvl / 100) * coin_price))
 
     async def buy_coin(self, coin: str, coin_price: int, amount: float):
