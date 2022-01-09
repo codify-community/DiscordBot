@@ -50,10 +50,12 @@ class LevelCommandos(Extension):
     async def descricao(self, it: ApplicationContext, descricao: Option(str, "Descrição para o seu perfil")):
         db_user = DataBaseUser(it.author.id)
         await db_user.set_description(descricao[0:1024])
-        await it.respond("Descrição atualizada com sucesso!",  ephemeral=True)
+        await it.respond("Descrição atualizada com sucesso!", ephemeral=True)
+
     top = SlashCommandGroup("top", "Mostra o top de usuários", guild_ids=[743482187365613641])
 
-    @top.command(description="Mostra os niveis do servidor baseado na quantidade de dinheiro", guild_ids=[743482187365613641])
+    @top.command(description="Mostra os niveis do servidor baseado na quantidade de dinheiro",
+                 guild_ids=[743482187365613641])
     async def money(self, it: ApplicationContext, pagina: Option(int, "Pagina para ver os niveis", required=False)):
         page_list = lambda lst, x: [lst[i:i + x] for i in range(0, len(lst), x)]
         pagina = pagina or 1

@@ -17,5 +17,5 @@ async def connect_database():
         "compressors": "zlib"
     }
     _database = AsyncIOMotorClient(config.databaseURL, **connection_args)
-
+    # kek
     logging.info("Connect to MongoDB")

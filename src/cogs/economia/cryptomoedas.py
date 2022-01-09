@@ -1,7 +1,6 @@
 import logging
 import random
 from datetime import datetime
-from typing_extensions import Required
 
 # async supremacy
 import aiohttp
@@ -45,13 +44,13 @@ class CryptoExtension(Extension):
         self.bot = bot
         self.logger = logging.getLogger(__name__)
         self.config = Config()
+        self.cache = {}
         self.last_update = datetime.now()
 
         @tasks.loop(minutes=15)
         async def update_cache():
             await self.bot.get_channel(self.config.logsChannel).send("Atualizando cache...")
             async with aiohttp.ClientSession() as session:
-                self.cache = {}
                 for crypto in cryptos_inverso.keys():
                     try:
                         async with session.get(f'https://api.binance.com/api/v3/ticker/24hr?symbol={crypto}') as resp:
@@ -101,8 +100,7 @@ class CryptoExtension(Extension):
         user = DataBaseUser(it.author.id)
         if quantidade <= 0:
             quantidade = (await user.get_wallet())[moeda]
-            
-        
+
         status = await user.sell_coins(
             moeda, self.cache[moeda].lastPrice, quantidade)
         if status != True:
@@ -115,26 +113,27 @@ class CryptoExtension(Extension):
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você pode comprar suas cryptomoedas")
     async def comprar(self, it: ApplicationContext,
                       moeda: Option(str, "A Moeda que você quer comprar", default="BTC", choices=cryptos),
-                      quantidade: Option(float, "Quantidade de moedas que você quer comprar", default=1.0, Required=False)):
-        
+                      quantidade: Option(float, "Quantidade de moedas que você quer comprar", default=1.0)):
+
         account = DataBaseUser(it.author.id)
-        
+
         if quantidade <= 0:
-            quantidade = await account.get_reais_count() / await account.get_price_after_discount(moeda, self.cache[moeda].lastPrice)        
-        
+            return await it.respond("Você não pode usar valores negativos na hora da compra!", ephemeral=True)
+
         status = await account.buy_coin(moeda, self.cache[moeda].lastPrice, quantidade)
-        
+
         if status != True:
-           
+
             await it.send_response(content=status, ephemeral=True)
         else:
-            
+
             embed = Embed(color=0x738ADB,
-                          description=f"Você comprou {quantidade} {moeda}(s) por `R${await account.get_price_after_discount(moeda, self.cache[moeda].lastPrice) * quantidade:.2f}`")
-            
+                          description=f"Você comprou {quantidade} {moeda}(s) por `R$ {await account.get_price_after_discount(self.cache[moeda].lastPrice) * quantidade:.2f}`")
+
             await it.send_response(embed=embed)
 
-    @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você vê quanto reais você tem") # nequinha pro monarquia, REIS inves de REAIS!!!!
+    @slash_command(guild_ids=[743482187365613641],
+                   description="Nesse comando, você vê quanto reais você tem")  # nequinha pro monarquia, REIS inves de REAIS!!!!
     async def carteira(self, it: ApplicationContext, user: Option(Member, "Membro", required=False)):
         acc = user or it.author
         account = DataBaseUser(acc.id)
