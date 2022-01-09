@@ -44,7 +44,6 @@ class EconomiaGeral(Extension):
         if status != True:
             await it.send_response(content=status, ephemeral=True)
         else:
-
             embed = Embed(color=0x738ADB, description=f"Você transferiu `R$ {quantidade}` para {membro}")
             embed.set_footer(text="Servidor Codify Community",
                              icon_url="https://cdn.discordapp.com/avatars/851618408965079070/dcaa7982cda5fc926064df5edb923aef.png?size=2048")
