@@ -58,44 +58,46 @@ class LevelCommandos(Extension):
                  guild_ids=[743482187365613641])
     async def money(self, it: ApplicationContext, pagina: Option(int, "Pagina para ver os niveis", required=False)):
         page_list = lambda lst, x: [lst[i:i + x] for i in range(0, len(lst), x)]
-        pagina = pagina or 1
-        server = CodifyCommunity()
+        async with it.typing():
+            pagina = pagina or 1
+            server = CodifyCommunity()
 
-        rank = await server.rank_members_money()
-        pages = page_list(rank, 10)
-        if pagina > len(pages):
-            pagina = 1
-        embed = Embed(title=f"Niveis do servidor (Dinheiro)", color=it.author.color)
-        embed.description = ""
-        embed.set_footer(text=f"Pagina {pagina}/{len(pages)}")
-        guild = self.bot.get_guild(743482187365613641)
-        for i, u in enumerate(pages[pagina - 1]):
-            user = guild.get_member(u.userID)
-            if user is not None and await u.get_reais_count() > 0:
-                embed.description += f"{i + 1}. [{user.name}#{user.discriminator}](https://discord.com/users/{user.id})" \
-                                     f" - `R$ {await u.get_reais_count():.2f}`\n"
-        await it.respond(embed=embed)
+            rank = await server.rank_members_money()
+            pages = page_list(rank, 10)
+            if pagina > len(pages):
+                pagina = 1
+            embed = Embed(title=f"Niveis do servidor (Dinheiro)", color=it.author.color)
+            embed.description = ""
+            embed.set_footer(text=f"Pagina {pagina}/{len(pages)}")
+            guild = self.bot.get_guild(743482187365613641)
+            for i, u in enumerate(pages[pagina - 1]):
+                user = guild.get_member(u.userID)
+                if user is not None and await u.get_reais_count() > 0:
+                    embed.description += f"{i + 1}. [{user.name}#{user.discriminator}](https://discord.com/users/{user.id})" \
+                                         f" - `R$ {await u.get_reais_count():.2f}`\n"
+            await it.respond(embed=embed)
 
     @top.command(description="Mostra os niveis do servidor baseado no nível", guild_ids=[743482187365613641])
     async def level(self, it: ApplicationContext, pagina: Option(int, "Pagina para ver os niveis", required=False)):
-        page_list = lambda lst, x: [lst[i:i + x] for i in range(0, len(lst), x)]
-        pagina = pagina or 1
-        server = CodifyCommunity()
+        async with it.typing():
+            page_list = lambda lst, x: [lst[i:i + x] for i in range(0, len(lst), x)]
+            pagina = pagina or 1
+            server = CodifyCommunity()
 
-        rank = await server.rank_members()
-        pages = page_list(rank, 10)
-        if pagina > len(pages):
-            pagina = 1
-        embed = Embed(title=f"Niveis do servidor", color=it.author.color)
-        embed.set_footer(text=f"Pagina {pagina}/{len(pages)}")
-        guild = self.bot.get_guild(743482187365613641)
-        embed.description = ""
-        for i, u in enumerate(pages[pagina - 1]):
-            user = guild.get_member(u.userID)
-            if user is not None and await u.get_level() > 0:
-                embed.description += f"{i + 1}. [{user.name}#{user.discriminator}](https://discord.com/users/{user.id})" \
-                                     f" - `Nível: {await u.get_level()}`\n"
-        await it.respond(embed=embed)
+            rank = await server.rank_members()
+            pages = page_list(rank, 10)
+            if pagina > len(pages):
+                pagina = 1
+            embed = Embed(title=f"Niveis do servidor", color=it.author.color)
+            embed.set_footer(text=f"Pagina {pagina}/{len(pages)}")
+            guild = self.bot.get_guild(743482187365613641)
+            embed.description = ""
+            for i, u in enumerate(pages[pagina - 1]):
+                user = guild.get_member(u.userID)
+                if user is not None and await u.get_level() > 0:
+                    embed.description += f"{i + 1}. [{user.name}#{user.discriminator}](https://discord.com/users/{user.id})" \
+                                         f" - `Nível: {await u.get_level()}`\n"
+            await it.respond(embed=embed)
 
 
 def setup(bot: Bot):
