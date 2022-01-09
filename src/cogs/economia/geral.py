@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timedelta
+from typing_extensions import Required
 
 from discord import Client
 from discord import Cog as Extension
@@ -11,6 +12,8 @@ from discord.embeds import Embed
 
 from src.accounts.users import DataBaseUser
 from src.config import Config
+from random import randint
+import asyncio
 
 
 class EconomiaGeral(Extension):
@@ -63,7 +66,32 @@ class EconomiaGeral(Extension):
         user = DataBaseUser(it.author.id)
         qnt = await user.daily()
         await it.send_response(content=f"Você recebeu `R$ {qnt}` de diaria!")
-
+    
+    @slash_command(guild_ids=[743482187365613641], description="aposte dinheiros (minimo de 100 reais pra jogar)")
+    async def roleta(self, it: ApplicationContext, num: Option(int, description="o numero para apostar", Required=True)):
+        db_user = DataBaseUser(it.author.id)
+        if await db_user.get_reais_count() < 100:
+            # TODO: mudar essa mensagem
+            embed = Embed(color=0x738ADB, description=f"❌ · Você não tem dinheiro suficiente")
+            return await it.send_response(embed=embed)
+        correct_number = randint(0, 120)
+        await db_user._inc_user_coins(-100)
+        embed = Embed(color=0x738ADB, description=f"Girando a roleta!!")
+        embed.set_image(url="https://thumbs.gfycat.com/YellowishNewEasternglasslizard-size_restricted.gif")
+        await it.send_response(embed=embed)
+        await asyncio.sleep(3)
+        if num == correct_number:
+            await db_user._inc_user_coins(10000)
+            # TODO: mudar a imagem
+            embed.set_image(url="https://i.redd.it/k3dzo703mur71.png")
+            embed.description = "Parabens! você ganhou 10K"
+        else:
+            await db_user._inc_user_coins(10000)
+            # TODO: mudar a imagem
+            embed.set_image(url="https://i.pinimg.com/originals/42/1e/2d/421e2de455f0918a369f67daada3590d.jpg")
+            embed.description = f"Você errou! o numero era: {correct_number}"
+        await it.edit(embed=embed)
+        
 
 def setup(bot: Client):
     bot.add_cog(EconomiaGeral(bot))

@@ -13,7 +13,7 @@ class Cooldown:
     def is_in_cooldown(self, key) -> bool:
         if self._is_in_cooldown_list(key) == False:
             return False
-        print(f"LOG: current_cooldown: {self.keys[key]} current_time: {time.time()}")
+       
         return self.keys[key] > time.time()
     def update_or_add(self, key):
         self.keys[key] = self._get_next_time()     
