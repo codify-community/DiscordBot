@@ -76,30 +76,36 @@ class DataBaseUser:
         if max_lvl == 0:
             return coin_price
         return round(coin_price - ((0.05 * max_lvl / 100) * coin_price))
-    async def _inc_karma(self, amount: int): # vamo fzr uma gambiarra fodaseeeeeeeeee
+
+    async def _inc_karma(self, amount: int):  # vamo fzr uma gambiarra fodaseeeeeeeeee
         await self._injector()
         user = await self.accounts.find_one({'userID': self.userID})
         if amount >= 1:
-            user['karma']['upvotes'] += amount 
+            user['karma']['upvotes'] += amount
         else:
             user['karma']['downvotes'] -= amount
 
-        await self.accounts.update_one({'userID': self.userID}, {'$set': { 'karma': user['karma']}})
-    
+        await self.accounts.update_one({'userID': self.userID}, {'$set': {'karma': user['karma']}})
+
     async def take_my_upvote(self):
         await self._inc_karma(1)
+
     async def take_my_downvote(self):
         await self._inc_karma(-1)
+
     async def get_upvotes(self):
         await self._injector()
         user = await self.accounts.find_one({'userID': self.userID})
         return user['karma']['upvotes']
+
     async def get_downvotes(self):
         await self._injector()
         user = await self.accounts.find_one({'userID': self.userID})
         return user['karma']['downvotes']
+
     async def get_karma(self):
-        return await self.get_upvotes() - await self.get_downvotes() 
+        return await self.get_upvotes() - await self.get_downvotes()
+
     async def buy_coin(self, coin: str, coin_price: int, amount: float):
         await self._injector()
         price_after_discount = await self.get_price_after_discount(coin_price)

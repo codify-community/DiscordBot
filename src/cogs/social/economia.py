@@ -44,7 +44,7 @@ class LevelCommandos(Extension):
         embed.add_field(name='⭐ negativas', value=f"`{await db_user.get_downvotes()}`", inline=True)
         embed.add_field(name=f'Barra de Progresso ⠀⠀⠀⠀⠀   ⠀⠀ ⠀⠀⠀{xp}/{next_level} XP ({progress}%)',
                         value=boxes[0:1024], inline=False)
-        
+
         embed.set_thumbnail(url=user.avatar.url)
 
         await it.respond(embed=embed)

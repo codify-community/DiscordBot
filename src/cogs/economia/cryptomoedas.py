@@ -15,6 +15,9 @@ from discord.ext import tasks
 
 from src.accounts.users import DataBaseUser
 from src.config import Config
+from src.utils.buttons import Confirm
+from src.utils.embeds import simple_embed, Kind
+from src.utils.markdown import fmt_command
 
 
 class CryptoCached:
@@ -100,15 +103,28 @@ class CryptoExtension(Extension):
         user = DataBaseUser(it.author.id)
         if quantidade <= 0:
             quantidade = (await user.get_wallet())[moeda]
-
+        if quantidade == 0:
+            return await it.respond(embed=simple_embed("Erro", "Você não possui moedas para vender!", Kind.Error))
+        confirm = Confirm()
+        message = await it.respond(embed=simple_embed("Venda de moedas", f"Você quer realmente "
+                                                                         f"vender {quantidade:f} {moeda}?"),
+                                   view=confirm)
+        await confirm.wait()
+        if not confirm.value:
+            return await message.edit_original_message(view=None, embed=simple_embed("Venda de moedas", "Você cancelou a "
+                                                                                                 "venda de "
+                                                                              "moedas!", Kind.Success))
         status = await user.sell_coins(
             moeda, self.cache[moeda].lastPrice, quantidade)
         if status != True:
-            await it.send_response(status, ephemeral=True)
+            await it.respond(view=None, embed=simple_embed("Venda de moedas", f"Você não tem moedas suficientes para "
+                                                                   f"vender {quantidade:f} {moeda}", Kind.Error))
+            return
         else:
-            embed = Embed(color=0x738ADB,
-                          description=f"Você vendeu {quantidade} {moeda} por `R${self.cache[moeda].lastPrice * quantidade:.2f}`")
-            await it.send_response(embed=embed)
+            embed = simple_embed("Yay!",
+                                 f"Você vendeu {quantidade:f} {moeda} por `R${self.cache[moeda].lastPrice * quantidade:.2f}`",
+                                 )
+            await message.edit_original_message(embed=embed, view=None)
 
     @slash_command(guild_ids=[743482187365613641], description="Nesse comando, você pode comprar suas cryptomoedas")
     async def comprar(self, it: ApplicationContext,
@@ -118,21 +134,31 @@ class CryptoExtension(Extension):
         account = DataBaseUser(it.author.id)
 
         if quantidade <= 0:
-            quantidade = await account.get_reais_count() / await account.get_price_after_discount(self.cache[moeda].lastPrice)
-            if quantidade <= 0: # se o bixo nao tiver dinheiro mesmo 
-                return await it.send_response("caraio tu ta pobre bixo")
-            
+            quantidade = await account.get_reais_count() / await account.get_price_after_discount(
+                self.cache[moeda].lastPrice)
+            if quantidade <= 0:  # se o bixo nao tiver dinheiro mesmo
+                return await it.send_response(
+                    embed=simple_embed("Sem Dinheiro", f"Você não tem dinheiro suficiente para "
+                                                       f"completar essa compra. Talvez dê se você pegar"
+                                                       f" seu {fmt_command('diaria')}", Kind.Error),
+                    ephemeral=True)
+        confirm = Confirm()
+        m = await it.respond(
+            embed=simple_embed("Você quer mesmo comprar?", f"Você quer comprar {quantidade:f} {moeda} por "
+                                                           f"`R${self.cache[moeda].lastPrice * quantidade:.2f}`?"),
+            view=confirm)
+        await confirm.wait()
+        if not confirm.value:
+            await m.edit_original_message(embed=simple_embed("Erro", "Você cancelou a compra.", Kind.Error), view=None)
         status = await account.buy_coin(moeda, self.cache[moeda].lastPrice, quantidade)
 
         if status != True:
-
-            await it.send_response(content=status, ephemeral=True)
+            await it.send_response(content=simple_embed("Erro", status, Kind.Error), ephemeral=True)
         else:
+            embed = simple_embed("Compra concluida", f"Você comprou {quantidade:f} {moeda}(s) por "
+                                                     f"`R$ {await account.get_price_after_discount(self.cache[moeda].lastPrice) * quantidade:.2f}`")
 
-            embed = Embed(color=0x738ADB,
-                          description=f"Você comprou {quantidade} {moeda}(s) por `R$ {await account.get_price_after_discount(self.cache[moeda].lastPrice) * quantidade:.2f}`")
-
-            await it.send_response(embed=embed)
+            await m.edit_original_message(embed=embed, view=None)
 
     @slash_command(guild_ids=[743482187365613641],
                    description="Nesse comando, você vê quanto reais você tem")  # nequinha pro monarquia, REIS inves de REAIS!!!!
@@ -144,7 +170,7 @@ class CryptoExtension(Extension):
                                                     it.author else "Sua Carteira", color=0x738ADB)
         wallet = await account.get_wallet()
         coins_str = '\n'.join(
-            [f'> {key} - `{wallet[key]}` moeda(s)' for key in wallet.keys()])
+            [f'> {key} - `{wallet[key]:f}` moeda(s)' for key in wallet.keys()])
         estimativa = sum([wallet[key] * self.cache[key].lastPrice for key in wallet.keys()])
         if wallet == {}:
             embed.description = f"{'Você' if acc == it.author else usr}  não tem nenhuma moeda em sua carteira"
