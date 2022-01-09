@@ -118,8 +118,10 @@ class CryptoExtension(Extension):
         account = DataBaseUser(it.author.id)
 
         if quantidade <= 0:
-            return await it.respond("Você não pode usar valores negativos na hora da compra!", ephemeral=True)
-
+            quantidade = await account.get_reais_count() / await account.get_price_after_discount(self.cache[moeda].lastPrice)
+            if quantidade <= 0: # se o bixo nao tiver dinheiro mesmo 
+                return await it.send_response("caraio tu ta pobre bixo")
+            
         status = await account.buy_coin(moeda, self.cache[moeda].lastPrice, quantidade)
 
         if status != True:
