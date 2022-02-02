@@ -35,7 +35,7 @@ class SiteInfo(commands.Cog):
             await ctx.send('Use .edit <tipo> <info>\nUse .edit help para verificar os tipos de edição')
             return
         
-        role_types = {"⎯⎯⎯⎯⎯⎯⠀〔Admin's〕⎯⎯⎯⎯⎯⎯⎯⠀":"admins", "⎯⎯⎯⎯⎯⎯⎯⎯⠀〔Mod〕⎯⎯⎯⎯⎯⎯⎯⎯⎯⠀":"mods", "⎯⎯⎯⎯⎯⎯⠀〔Dono〕⎯⎯⎯⎯⎯⎯⎯⠀":"dono", "BOOSTER ❤️":"boosters"}
+        role_types = {"⎯⎯⎯⎯⎯⎯⠀〔Admin's〕⎯⎯⎯⎯⎯⎯⎯⠀":"staffs", "⎯⎯⎯⎯⎯⎯⎯⎯⠀〔Mod〕⎯⎯⎯⎯⎯⎯⎯⎯⎯⠀":"staffs", "⎯⎯⎯⎯⎯⎯⠀〔Dono〕⎯⎯⎯⎯⎯⎯⎯⠀":"staffs", "BOOSTER ❤️":"boosters"}
         role = role_types[ctx.author.top_role.name]
         obj = site.find_one({'_id':1})[role]
         print(obj)
