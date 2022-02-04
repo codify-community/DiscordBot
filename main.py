@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands
-import os
+
 from dotenv import load_dotenv
 import asyncio
-
+import os
 
 load_dotenv()
 
@@ -27,7 +27,6 @@ async def on_ready():
             else:
                 print('loaded ', e)
                 bot.load_extension(f'cogs.{i}.{e[:-3]}')
-
 
     while True:
         await bot.change_presence(status=discord.Status.online, activity=discord.Game(name="Codify Community", type=3))

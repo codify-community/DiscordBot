@@ -1,8 +1,9 @@
-import discord
 from discord.ext import commands
-import asyncio
-import datetime
 from utils.mongoconnect import mongoConnect
+from utils.get_json import get_json
+import pprint
+
+config = get_json("config.json")
 
 cluster = mongoConnect()
 db = cluster['discord']
@@ -35,9 +36,15 @@ class SiteInfo(commands.Cog):
             return
 
         try:
-            role_types = {"⎯⎯⎯⎯⎯⎯⠀〔Admin's〕⎯⎯⎯⎯⎯⎯⎯⠀":"staffs", "⎯⎯⎯⎯⎯⎯⎯⎯⠀〔Mod〕⎯⎯⎯⎯⎯⎯⎯⎯⎯⠀":"staffs", "⎯⎯⎯⎯⎯⎯⠀〔Dono〕⎯⎯⎯⎯⎯⎯⎯⠀":"staffs", "BOOSTER ❤️":"boosters"}
+            role=""
+            for i in ctx.author.roles:
+                if i.id in config["guild"]["roles"]["staffs"]:
+                    role = "staffs"
+                elif i.id in config["guild"]["roles"]["boosters"]:
+                    role = "boosters"
 
-            role = role_types[ctx.author.top_role.name]
+            if not role:
+                return await ctx.send('Você não tem permissão para utilizar esse comando!')
 
             obj = site.find_one({'_id':0})[role]
 
@@ -58,9 +65,7 @@ class SiteInfo(commands.Cog):
 
             await ctx.send('Editado com sucesso!')
         except:
-            await ctx.send('Erro ao editar!\n Verifique se o tipo de edição está correto.')
+            await ctx.send('Erro ao editar!\nVerifique se o tipo de edição está correto.')
     
-
-
 def setup(bot):
     bot.add_cog(SiteInfo(bot))

@@ -13,7 +13,6 @@ class Staff(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     async def criar_conta(self, mem_id):
         if mem_id != 851618408965079070:
             try:    
@@ -114,7 +113,7 @@ class Staff(commands.Cog):
         if motivo == None:
             motivo = 'Motivo não definido'
 
-        data_pura = date.today()
+        data_pura = datetime.today()
         data = data_pura.strftime('%D/%M/%Y')
         hora_pura = datetime.datetime.now() - datetime.timedelta(hours=3)
         hora = hora_pura.strftime('%H:%M')

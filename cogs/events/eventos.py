@@ -7,14 +7,9 @@ from random import randint
 import re
 from discord.ext import tasks
 from utils.mongoconnect import mongoConnect
+from utils.get_json import get_json
 
-import json
-import os
-
-path = os.getcwd()
-
-with open(f"{path}/config.json") as json_file:
-    config = json.load(json_file)
+config = get_json("config.json")
 
 cluster = mongoConnect()
 db = cluster['discord']
@@ -56,12 +51,14 @@ class Eventos(commands.Cog):
 
             xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
 
+            nivel = 0
+
             if xp in range(0,25) and lvl > 1:
                 next_level = int(200*((1/2)*lvl))
                 nivel = int((next_level / 100)-1)
 
             if nivel in level_num:
-                bonus = 50*nivel
+                bonus = 50 * nivel
                 conta.update_one({'_id':id}, {'$inc':{'saldo':bonus}})
                 cmds = self.bot.get_channel(config["guild"]["channels"]["level_up"])
                 await cmds.send(f'⭐ | Parabéns {message.author.mention}, você upou para o **Level {nivel}**!')
@@ -92,7 +89,6 @@ class Eventos(commands.Cog):
                         await message.channel.send('Houve um problema com o bot do bump, portanto, não podemos recompensar o autor do comando')
                         staff = self.bot.get_channel(853715980516982804)
                         await staff.send('Houve um problema com o bot do bump, portanto, não podemos recompensar o autor do comando')
-
 
     @tasks.loop(minutes=1)
     async def add_xp():

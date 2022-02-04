@@ -4,15 +4,10 @@ import asyncio
 import datetime
 from utils.mongoconnect import mongoConnect
 import requests as req
-import json
 import pprint
+from utils.get_json import get_json
 
-import os
-
-path = os.getcwd()
-
-with open(f"{path}/config.json") as json_file:
-    config = json.load(json_file)
+config = get_json("config.json")
 
 cluster = mongoConnect()
 db = cluster['discord']
@@ -51,7 +46,6 @@ def get_updated_users(discord_users, db_users):
             updated_users.append(user)
             
     return updated_users
-    
 
 class Tarefas(commands.Cog):
     def __init__(self, bot):
