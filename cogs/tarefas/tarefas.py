@@ -44,7 +44,7 @@ def get_updated_users(discord_users, db_users):
             user.update({
                 'habilidades': ['Não Informado'],
                 'bio': "Biografia Não Definida",
-                'ocupacao': '',
+                'ocupacao': 'Ocupação não definida',
                 'github': 'https://github.com/codify-community'
             })
             
