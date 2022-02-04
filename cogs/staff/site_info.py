@@ -13,7 +13,6 @@ class SiteInfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     async def criar_conta(self, mem_id):
         if mem_id != 851618408965079070:
             try:    
@@ -34,22 +33,29 @@ class SiteInfo(commands.Cog):
         if info == None and tipo != 'help':
             await ctx.send('Use .edit <tipo> <info>\nUse .edit help para verificar os tipos de edição')
             return
+
         try:
             role_types = {"⎯⎯⎯⎯⎯⎯⠀〔Admin's〕⎯⎯⎯⎯⎯⎯⎯⠀":"staffs", "⎯⎯⎯⎯⎯⎯⎯⎯⠀〔Mod〕⎯⎯⎯⎯⎯⎯⎯⎯⎯⠀":"staffs", "⎯⎯⎯⎯⎯⎯⠀〔Dono〕⎯⎯⎯⎯⎯⎯⎯⠀":"staffs", "BOOSTER ❤️":"boosters"}
+
             role = role_types[ctx.author.top_role.name]
+
             obj = site.find_one({'_id':0})[role]
+
             if len(info) >= maxs[tipo] and tipo != 'habilidades':
                 info = info[0:maxs[tipo]]
+
             if tipo == 'habilidades':
                 info = info.split(',')
                 if len(info) > maxs[tipo]:
                     info = info[0:maxs[tipo] - 1 ]
-            
+
             for i in obj:
                 if i['id'] == id:
                     i[tipo] = info
                     break
-            site.update_one({'_id':1}, {'$set':{role:obj}})
+
+            site.update_one({'_id':0}, {'$set':{role:obj}})
+
             await ctx.send('Editado com sucesso!')
         except:
             await ctx.send('Erro ao editar!\n Verifique se o tipo de edição está correto.')
