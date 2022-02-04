@@ -42,7 +42,7 @@ def get_updated_users(discord_users, db_users):
             updated_users.append(db_user)
         else:
             user.update({
-                'habilidade': ["Nenhuma"],
+                'habilidades': ["Nenhuma"],
                 'bio': "Biografia Não Definida",
                 'ocupacao': "",
                 'github': 'https://github.com/codify-community'
