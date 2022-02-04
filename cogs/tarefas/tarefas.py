@@ -69,15 +69,14 @@ class Tarefas(commands.Cog):
 
         @tasks.loop(minutes=10)
         async def get_info(self):
-            guild = self.bot.get_guild(743482187365613641)
+            guild = self.bot.get_guild(config["guild"]["id"])
             #member quant
             member_count = int(guild.member_count)
             #channels quant
             channel_count = len(guild.channels)
             #staff quant
-            staff_count = 0
 
-            db_staffs, db_boosters = [], []
+            db_staffs, db_boosters = await find_users()
             discord_staffs, discord_boosters = [], []
 
             for member in guild.members:
