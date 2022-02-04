@@ -42,9 +42,9 @@ def get_updated_users(discord_users, db_users):
             updated_users.append(db_user)
         else:
             user.update({
-                'habilidades': ["Nenhuma"],
+                'habilidades': ['Não Informado'],
                 'bio': "Biografia Não Definida",
-                'ocupacao': "",
+                'ocupacao': '',
                 'github': 'https://github.com/codify-community'
             })
             
@@ -76,19 +76,6 @@ class Tarefas(commands.Cog):
             channel_count = len(guild.channels)
             #staff quant
             staff_count = 0
-
-            '''
-                * Pegar os staffs e boosters do banco de dados;
-                * Pegar os staffs e boosters atuais do discord;
-                * Comparar arrays:
-                    - Se o usuário existe no banco de dados:
-                        - Verificar se existe alguma propriedade diferente;
-                    - Se não:
-                        - Adicionar o usuário a lista de usuários;
-                    
-                * Verificar se algum usuário existe no banco de dados, mas não existe mais no array 
-                do usuários do discord
-            '''
 
             db_staffs, db_boosters = [], []
             discord_staffs, discord_boosters = [], []
@@ -128,7 +115,7 @@ class Tarefas(commands.Cog):
             updated_staffs = get_updated_users(discord_staffs, db_staffs)
             updated_boosters = get_updated_users(discord_boosters, db_staffs)
             
-            site.find_one_and_update({'_id': 0}, {'$set': {'staffs': updated_staffs, 'boosters': updated_boosters}})
+            site.find_one_and_update({'_id': 0}, {'$set': {'staffs': updated_staffs, 'boosters': updated_boosters, 'member_count': member_count, 'channel_count': channel_count, 'staff_count': len(updated_staffs)}})
 
         get_info.start(self)
 
