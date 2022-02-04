@@ -4,40 +4,53 @@ import asyncio
 import datetime
 from utils.mongoconnect import mongoConnect
 import requests as req
-  
+import json
+import pprint
+
+import os
+
+path = os.getcwd()
+
+with open(f"{path}/config.json") as json_file:
+    config = json.load(json_file)
+
 cluster = mongoConnect()
 db = cluster['discord']
 site = db['site']
 logs = db['logs']
 
-async def find_staff():
+async def find_users():
     info = site.find_one({'_id': 0})
     staffs = info['staffs']
     boosters = info['boosters']
-    return [staffs, boosters]
+    return staffs, boosters
 
-def get_update(member, db_user):
+def get_updated_users(discord_users, db_users):
+    updated_users = []
 
-    discord_member = {
-        name: member.name,
-        pfp: str(member.avatar_url),
-    }
+    for user in discord_users:
 
-    for user in db_staffs:
-        if user['id'] == member.id:
-            db_user = user
-
-    user = list(user.items())
-    db_user = list(user.items())
-
-    update = {}
-
-    for i in range(0,len(user)):
-        if(user[i][1]!=db_user[i][1]):
-            update[user[i][0]] = user[i][1]
+        db_user = {}
+        
+        for i in db_users:
+            if user["id"] == i["id"]:
+                db_user = i
+                break
+        
+        if db_user:
+            db_user.update(user)
+            updated_users.append(db_user)
+        else:
+            user.update({
+                'habilidade': ["Nenhuma"],
+                'bio': "Biografia Não Definida",
+                'ocupacao': "",
+                'github': 'https://github.com/codify-community'
+            })
             
-    
-    
+            updated_users.append(user)
+            
+    return updated_users
     
 
 class Tarefas(commands.Cog):
@@ -54,74 +67,68 @@ class Tarefas(commands.Cog):
         async def keep_api_alive():
             req.get('https://codify-site-api.herokuapp.com/api/home')
 
-
         @tasks.loop(minutes=10)
         async def get_info(self):
-            #member quant
             guild = self.bot.get_guild(743482187365613641)
+            #member quant
             member_count = int(guild.member_count)
             #channels quant
             channel_count = len(guild.channels)
             #staff quant
             staff_count = 0
 
+            '''
+                * Pegar os staffs e boosters do banco de dados;
+                * Pegar os staffs e boosters atuais do discord;
+                * Comparar arrays:
+                    - Se o usuário existe no banco de dados:
+                        - Verificar se existe alguma propriedade diferente;
+                    - Se não:
+                        - Adicionar o usuário a lista de usuários;
+                    
+                * Verificar se algum usuário existe no banco de dados, mas não existe mais no array 
+                do usuários do discord
+            '''
 
-            #staffs and boosters
-            staffs, boosters = [], [] # VAI RECEBER DADOS DO SERVER
-            staffs_to_add, boosters_to_add = [], [] # VAI RECEBER STAFFS CASO NÃO ESTEJAM NO BANCO
-            already_on = []
-            try:
-                db_staffs, db_boosters = await find_staff() # VAI RECEBER STAFFS DO BANCO
-                def get_all_ids(lista):
-                    for i in lista:
-                        already_on.append(i['id'])
-                get_all_ids(db_staffs)
-                get_all_ids(db_boosters)
-            except:
-                print('erro')
-                db_staffs, db_boosters = [], []
+            db_staffs, db_boosters = [], []
+            discord_staffs, discord_boosters = [], []
 
-            staff_roles_names = ["⎯⎯⎯⎯⎯⎯⠀〔Admin's〕⎯⎯⎯⎯⎯⎯⎯⠀", "⎯⎯⎯⎯⎯⎯⎯⎯⠀〔Mod〕⎯⎯⎯⎯⎯⎯⎯⎯⎯⠀", '⎯⎯⎯⎯⎯⎯⠀〔Dono〕⎯⎯⎯⎯⎯⎯⎯⠀']
-            role_types = {"⎯⎯⎯⎯⎯⎯⠀〔Admin's〕⎯⎯⎯⎯⎯⎯⎯⠀":"ADMIN", "⎯⎯⎯⎯⎯⎯⎯⎯⠀〔Mod〕⎯⎯⎯⎯⎯⎯⎯⎯⎯⠀":"MOD", "⎯⎯⎯⎯⎯⎯⠀〔Dono〕⎯⎯⎯⎯⎯⎯⎯⠀":"OWNER", "BOOSTER ❤️":"boosters"}
             for member in guild.members:
+                if member.bot: continue
+                    
                 for role in member.roles:
-                    if role.name in staff_roles_names:
-                        if member.id not in already_on:
-                            staff_count += 1
-                            role = role_types[member.top_role.name]
-                            new_staffs.append({'id': member.id, 'name': member.name, 'pfp': str(member.avatar_url), 'bio':'Biografia Não Definida', 'ocupacao':'', 'habilidades':['Nenhuma'], 'github':'https://github.com/codify-community', 'role':role})
-                        else:
+                    if role.id in config['guild']['roles']['staffs']:
+                        
+                        user = await self.bot.fetch_user(member.id)
 
-                            
+                        staff = {
+                            'id': user.id,
+                            'role': config['guild']['roles_name'][str(role.id)],
+                            'name': user.name,
+                            'pfp': str(user.avatar_url)
+                        }
 
+                        discord_staffs.append(staff)
+                        break
 
+                    elif role.id in config['guild']['roles']['boosters']:
 
-                            db_discord_member = {
+                        user = await self.bot.fetch_user(member.id)
 
-                            }
-
-
-                            get_update({
-                                id: member.id,
-
-                            }, {
-                                id: ""
-                            })
-                            
-                            
-
-                    if role.name == "BOOSTER ❤️"  and member.id not in already_on:
-                        new_boosters.append({'id': member.id, 'name': member.name, 'pfp': str(member.avatar_url), 'bio':'Biografia Não Definida', 'ocupacao':'', 'habilidades':['Nenhuma'], 'github':'https://github.com/codify-community', 'role':'BOOSTER'})
+                        booster = {
+                            'id': user.id,
+                            'role': config['guild']['roles_name'][str(role.id)],
+                            'name': user.name,
+                            'pfp': str(user.avatar_url)
+                        }
+                        
+                        discord_boosters.append(booster)
+                        break
             
-
+            updated_staffs = get_updated_users(discord_staffs, db_staffs)
+            updated_boosters = get_updated_users(discord_boosters, db_staffs)
             
-
-
-            print(f'''
-            staffs: {staffs}
-            boosters: {boosters}
-            ''')
-            #site.update_one({'_id':0}, {'$set':{'channel_count':channel_count, 'staff_count':staff_count, 'member_count':member_count, 'staffs':staffs, 'boosters':boosters}})
+            site.find_one_and_update({'_id': 0}, {'$set': {'staffs': updated_staffs, 'boosters': updated_boosters}})
 
         get_info.start(self)
 

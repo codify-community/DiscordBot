@@ -46,15 +46,14 @@ class Eventos(commands.Cog):
                 next_level = int(200*((1/2)*lvl))
                 nivel = int((next_level / 100)-1)
                 up = False
-                for i in levelnum:
-                    if nivel == i:
-                        id_cargo = levelnum[i]
-                        bonus = 50*i
-                        conta.update_one({'_id':id}, {'$inc':{'saldo':bonus}})
-                        cmds = self.bot.get_channel(760531609261834250)
-                        await cmds.send(f'⭐ | Parabéns {message.author.mention}, você upou para o **Level {nivel}**!',embed=embed)
-                        up = True
-                        conta.update_one({'_id':id}, {'$inc':{'xp':26}})
+                if nivel == i:
+                    
+                    bonus = 50*i
+                    conta.update_one({'_id':id}, {'$inc':{'saldo':bonus}})
+                    cmds = self.bot.get_channel(760531609261834250)
+                    await cmds.send(f'⭐ | Parabéns {message.author.mention}, você upou para o **Level {nivel}**!',embed=embed)
+                    up = True
+                    conta.update_one({'_id':id}, {'$inc':{'xp':26}})
                 if up == False:
                     cmds = self.bot.get_channel(jsl.get_channel('comandos'))
                     await cmds.send(f'⭐ | Parabéns {message.author.mention}, você passou para o **Level {nivel}**!')

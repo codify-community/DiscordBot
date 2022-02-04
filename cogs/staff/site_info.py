@@ -37,7 +37,7 @@ class SiteInfo(commands.Cog):
         try:
             role_types = {"⎯⎯⎯⎯⎯⎯⠀〔Admin's〕⎯⎯⎯⎯⎯⎯⎯⠀":"staffs", "⎯⎯⎯⎯⎯⎯⎯⎯⠀〔Mod〕⎯⎯⎯⎯⎯⎯⎯⎯⎯⠀":"staffs", "⎯⎯⎯⎯⎯⎯⠀〔Dono〕⎯⎯⎯⎯⎯⎯⎯⠀":"staffs", "BOOSTER ❤️":"boosters"}
             role = role_types[ctx.author.top_role.name]
-            obj = site.find_one({'_id':1})[role]
+            obj = site.find_one({'_id':0})[role]
             if len(info) >= maxs[tipo] and tipo != 'habilidades':
                 info = info[0:maxs[tipo]]
             if tipo == 'habilidades':
