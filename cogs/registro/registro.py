@@ -111,10 +111,8 @@ class Registro(commands.Cog):
             role_id = get_role_id(channels[channel.id], emoji)
             role = guild.get_role(int(role_id))
             await user.add_roles(role)
-            print('added: ' + role.name)
-        except Exception as e:
-            print(e)
-            print('rr desabilitado neste canal!')
+        except:
+            pass
 
 
     @commands.Cog.listener()
@@ -129,10 +127,8 @@ class Registro(commands.Cog):
             role_id = get_role_id(channels[channel.id], emoji)
             role = guild.get_role(int(role_id))
             await user.remove_roles(role)
-            print('removed: ' + role.name)
-        except Exception as e:
-            print(e)
-            print('rr desabilitado neste canal!')
+        except:
+            pass
 
 def setup(bot):
     bot.add_cog(Registro(bot))
