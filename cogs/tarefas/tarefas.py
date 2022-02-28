@@ -71,10 +71,11 @@ class Tarefas(commands.Cog):
 
             for member in guild.members:
                 if member.bot: continue
-                    
-                for role in member.roles:
+
+                for role in reversed(member.roles):
+
                     if role.id in config['guild']['roles']['staffs']:
-                        
+
                         user = await self.bot.fetch_user(member.id)
 
                         staff = {
