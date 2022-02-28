@@ -57,10 +57,6 @@ class Tarefas(commands.Cog):
             logs.find_one_and_update({'_id': 0}, {'$set': {'last_ping': hr}})
         send_status.start()
 
-        @tasks.loop(hours=24)
-        async def keep_api_alive():
-            req.get('https://codify-site-api.herokuapp.com/api/home')
-
         @tasks.loop(minutes=10)
         async def get_info(self):
             guild = self.bot.get_guild(config["guild"]["id"])

@@ -149,8 +149,6 @@ class Staff(commands.Cog):
             for i in warns:
                 msg += f'{i}\n\n'
             await ctx.send(embed=discord.Embed(title=f'warnings de {member.name}', description=msg, color=0x1CFEFE)) 
-
-
     @warnings.error
     async def warnings_error(self, ctx, error):
         if isinstance(error, commands.errors.MissingPermissions):

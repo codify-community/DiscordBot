@@ -12,7 +12,6 @@ intents.members = True
 bot = commands.Bot(command_prefix=os.getenv('prefix'), case_insensitive=True, intents=intents)
 bot.remove_command('help')
 
-
 @bot.event
 async def on_ready():
 
