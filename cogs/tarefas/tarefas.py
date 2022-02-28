@@ -106,7 +106,7 @@ class Tarefas(commands.Cog):
                         break
             
             updated_staffs = get_updated_users(discord_staffs, db_staffs)
-            updated_boosters = get_updated_users(discord_boosters, db_staffs)
+            updated_boosters = get_updated_users(discord_boosters, db_boosters)
             
             site.find_one_and_update({'_id': 0}, {'$set': {'staffs': updated_staffs, 'boosters': updated_boosters, 'member_count': member_count, 'channel_count': channel_count, 'staff_count': len(updated_staffs)}})
 
