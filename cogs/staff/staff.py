@@ -256,6 +256,9 @@ class Staff(commands.Cog):
         embed.set_footer(text=f'{ctx.author}', icon_url=ctx.author.avatar_url)
         
         await ctx.send(embed=embed)
+    @lock.error
+    async def lock_error(self, ctx, error):
+        pass
 
 def setup(bot):
     bot.add_cog(Staff(bot))
