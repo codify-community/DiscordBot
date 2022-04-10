@@ -6,8 +6,8 @@ import asyncio
 from random import randint
 import re
 from discord.ext import tasks
-from util.mongoconnect import mongoConnect
-from util.get_json import get_json
+from utils.mongoconnect import mongoConnect
+from utils.get_json import get_json
 
 config = get_json("config.json")
 

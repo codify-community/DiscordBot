@@ -4,7 +4,7 @@ import requests as req
 from random import randint
 import asyncio
 from discord.ext.commands.core import cooldown
-from util.mongoconnect import mongoConnect
+from utils.mongoconnect import mongoConnect
 
 cluster = mongoConnect()
 db = cluster['discord']

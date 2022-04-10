@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import asyncio
-from util.mongoconnect import mongoConnect
+from utils.mongoconnect import mongoConnect
 
 cluster = mongoConnect()
 db = cluster['codify']
