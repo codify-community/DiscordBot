@@ -1,3 +1,4 @@
+from operator import mod
 import discord
 from discord.ext import commands
 import asyncio
@@ -229,8 +230,14 @@ class Staff(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def lock(self, ctx):
         support_role = discord.utils.get(ctx.guild.roles, name='Membro')
+        mod_role = discord.utils.get(ctx.guild.roles, name='⎯⎯⎯⎯⎯⎯⎯⎯⠀〔Mod〕⎯⎯⎯⎯⎯⎯⎯⎯⎯')
 
         channel_perms = ctx.channel.overwrites_for(support_role)
+        mod_channel_perms = ctx.channel.overwrites_for(mod_role)
+
+        if mod_channel_perms.send_messages != True:
+            mod_channel_perms.send_messages = True
+            await ctx.channel.set_permissions(mod_role, overwrite=mod_channel_perms)
 
         if channel_perms.send_messages == True:
             channel_perms.send_messages = False
