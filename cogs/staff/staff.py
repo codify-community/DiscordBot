@@ -235,13 +235,13 @@ class Staff(commands.Cog):
 
         if channel_perms.send_messages == True:
             overwrite.send_messages = False
-            await ctx.channel.set_permissions(support_role, overwrite=overwrite)
+            await ctx.channel.updateOverwrite(support_role, overwrite=overwrite)
 
             embed = discord.Embed(title='Canal Trancado!', color=0x8059CF)
             embed.set_thumbnail(url='https://media.discordapp.net/attachments/887158781832749086/962741013196210217/lock.png')
         else:
             overwrite.send_messages = True
-            await ctx.channel.set_permissions(support_role, overwrite=overwrite)
+            await ctx.channel.updateOverwrite(support_role, overwrite=overwrite)
 
             embed = discord.Embed(title='Canal Destrancado!', color=0x8059CF)
             embed.set_thumbnail(url='https://media.discordapp.net/attachments/887158781832749086/962741003364728852/unlocked.png')
