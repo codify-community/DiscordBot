@@ -229,19 +229,16 @@ class Staff(commands.Cog):
     @commands.has_permissions(kick_members=True)
     async def lock(self, ctx):
         support_role = discord.utils.get(ctx.guild.roles, name='Membro')
-        overwrite = discord.PermissionOverwrite(send_messages=False)
 
         channel_perms = ctx.channel.overwrites_for(support_role)
 
         if channel_perms.send_messages == True:
-            overwrite.send_messages = False
-            await ctx.channel.updateOverwrite(support_role, overwrite=overwrite)
+            await ctx.channel.updateOverwrite(support_role, send_messages=False)
 
             embed = discord.Embed(title='Canal Trancado!', color=0x8059CF)
             embed.set_thumbnail(url='https://media.discordapp.net/attachments/887158781832749086/962741013196210217/lock.png')
         else:
-            overwrite.send_messages = True
-            await ctx.channel.updateOverwrite(support_role, overwrite=overwrite)
+            await ctx.channel.updateOverwrite(support_role, send_messages=True)
 
             embed = discord.Embed(title='Canal Destrancado!', color=0x8059CF)
             embed.set_thumbnail(url='https://media.discordapp.net/attachments/887158781832749086/962741003364728852/unlocked.png')
