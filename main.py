@@ -14,7 +14,7 @@ bot.remove_command('help')
 
 @bot.event
 async def on_ready():
-
+    
     print('@================@')
     print('     BOT ONLINE   ')
     print('@================@')

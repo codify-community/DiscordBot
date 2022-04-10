@@ -3,7 +3,7 @@ from discord.ext import commands
 import requests as req
 import datetime
 import asyncio
-from utils.mongoconnect import mongoConnect
+from util.mongoconnect import mongoConnect
 
 cluster = mongoConnect()
 db = cluster['discord']

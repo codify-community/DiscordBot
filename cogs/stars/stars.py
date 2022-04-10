@@ -7,7 +7,7 @@ import asyncio
 from random import randint
 import re
 from discord.ext import tasks
-from utils.mongoconnect import mongoConnect
+from util.mongoconnect import mongoConnect
 import datetime
 
 load_dotenv()

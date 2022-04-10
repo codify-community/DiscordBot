@@ -2,10 +2,10 @@ import discord
 from discord.ext import commands, tasks
 import asyncio
 import datetime
-from utils.mongoconnect import mongoConnect
+from util.mongoconnect import mongoConnect
 import requests as req
 import pprint
-from utils.get_json import get_json
+from util.get_json import get_json
 
 config = get_json("config.json")
 
