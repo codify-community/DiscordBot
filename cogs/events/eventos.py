@@ -36,6 +36,11 @@ class Eventos(commands.Cog):
 
         await self.criar_conta(id)
 
+        if message.content == f"<@!{self.bot.user.id}>":
+            embed = discord.Embed(description=f'''**```Olá programador, vejo que está perdido.\n\nO prefixo do bot é "{os.getenv('prefix')}"```**''', color=0x524D68)
+            embed.set_thumbnail(url="https://images-ext-2.discordapp.net/external/Qzqyb8PnlbJO12NC2At6KTKOXrrI5JIiWb1UyBmfSD8/https/cdn.discordapp.com/icons/743482187365613641/a_cdb6f45de29742c3d687597f1636f2b5.gif")
+            await message.channel.send(embed=embed)
+
         if not message.author.bot:
             if not id in premio:
                 premio.append(id)
@@ -63,32 +68,6 @@ class Eventos(commands.Cog):
                 cmds = self.bot.get_channel(config["guild"]["channels"]["level_up"])
                 await cmds.send(f'⭐ | Parabéns {message.author.mention}, você upou para o **Level {nivel}**!')
                 conta.update_one({'_id':id}, {'$inc':{'xp':26}})
-
-        # if message.author.id == 302050872383242240:
-        #     try:
-        #         for i in message.embeds:
-        #             print(i.description)
-        #             if ':thumbsup:' in i.description:
-        #                 id = re.sub('[^0-9]', '', i.description[0:30])
-        #                 if id != '':
-        #                     await message.channel.send(f'<@{str(id)}>')
-        #                     await message.channel.send(embed = discord.Embed(title='Recompensa pelo bump', description = f'**Parabéns <@{str(id)}>, você ganhou 40 reais por ter dado Bump no server.**\nVolte daqui 2 horas para poder bumpar novamente', color=0x1CFEFE))
-        #                     conta.find_one_and_update({'_id':int(id)}, {'$inc':{'saldo':40}})
-        #                 else:
-        #                     await message.channel.send('Houve um problema com o bot do bump, portanto, não podemos recompensar o autor do comando')
-        #                     staff = self.bot.get_channel(853715980516982804)
-        #                     await staff.send('Houve um problema com o bot do bump, portanto, não podemos recompensar o autor do comando')
-        #     except:
-        #         if ':thumbsup:' in message.content:
-        #             id = re.sub('[^0-9]', '', i.description[0:30])
-        #             if id != '':
-        #                 await message.channel.send(f'<@{str(id)}>')
-        #                 await message.channel.send(embed = discord.Embed(title='Recompensa pelo bump', description = f'**Parabéns <@{str(id)}>, você ganhou 40 reais por ter dado Bump no server.**\nVolte daqui 2 horas para poder bumpar novamente', color=0x1CFEFE))
-        #                 conta.find_one_and_update({'_id':int(id)}, {'$inc':{'saldo':40}})
-        #             else:
-        #                 await message.channel.send('Houve um problema com o bot do bump, portanto, não podemos recompensar o autor do comando')
-        #                 staff = self.bot.get_channel(853715980516982804)
-        #                 await staff.send('Houve um problema com o bot do bump, portanto, não podemos recompensar o autor do comando')
 
     @tasks.loop(minutes=1)
     async def add_xp():
