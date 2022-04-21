@@ -1,13 +1,13 @@
 import discord
 from discord.ext import commands
-import requests as req
 import os
-import asyncio
 from random import randint
-import re
 from discord.ext import tasks
-from utils.mongoconnect import mongoConnect
-from utils.get_json import get_json
+from loaders.mongoconnect import mongoConnect
+from loaders.get_json import get_json
+from dotenv import load_dotenv
+
+load_dotenv()
 
 config = get_json("config.json")
 
@@ -36,7 +36,7 @@ class Eventos(commands.Cog):
 
         await self.criar_conta(id)
 
-        if message.content == f"<@!{self.bot.user.id}>":
+        if message.content == f"<@{self.bot.user.id}>":
             embed = discord.Embed(description=f'''**```Olá programador, vejo que está perdido.\n\nO prefixo do bot é "{os.getenv('prefix')}"```**''', color=0x524D68)
             embed.set_thumbnail(url="https://images-ext-2.discordapp.net/external/Qzqyb8PnlbJO12NC2At6KTKOXrrI5JIiWb1UyBmfSD8/https/cdn.discordapp.com/icons/743482187365613641/a_cdb6f45de29742c3d687597f1636f2b5.gif")
             await message.channel.send(embed=embed)

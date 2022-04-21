@@ -1,0 +1,98 @@
+{
+    "embed": {
+        "name": ":gear: Embed",
+        "value": ".embed <text>"
+    },
+    "ping": {
+        "name": ":gear: Ping",
+        "value": ".ping"
+    },
+    "help": {
+        "name": ":gear: Help",
+        "value": ".help [command]"
+    },
+    "comprar": {
+        "name": ":coin: Comprar",
+        "value": ".comprar <crypto> <quantidade> <preço>"
+    },
+    "vender": {
+        "name": ":coin: Vender",
+        "value": ".vender <crypto> <quantidade> <preço>"
+    },
+    "wallet": {
+        "name": ":coin: Wallet",
+        "value": ".wallet [user]"
+    },
+    "saldo": {
+        "name": ":money_with_wings: Saldo",
+        "value": ".saldo [user]"
+    },
+    "transferir": {
+        "name": ":money_with_wings: Transferir",
+        "value": ".transferir <user> <quantidade>"
+    },
+    "descricao": {
+        "name": ":money_with_wings: Descrição",
+        "value": ".descricao <text>"
+    },
+    "rank": {
+        "name": ":money_with_wings: Rank",
+        "value": ".rank [user]"
+    },
+    "diario": {
+        "name": ":money_with_wings: Diario",
+        "value": ".diario"
+    },
+    "roleta": {
+        "name": ":money_with_wings: Roleta",
+        "value": ".roleta <number : 1 - 60>"
+    },
+    "apostar": {
+        "name": ":money_with_wings: Apostar",
+        "value": ".apostar <user> <amount>"
+    },
+    "stars": {
+        "name": ":star2: Stars",
+        "value": ".stars [user]"
+    },
+    "avaliar": {
+        "name": ":star2: Avaliar",
+        "value": ".avaliar <user> <text>"
+    },
+    "desavaliar": {
+        "name": ":star2: Desavaliar",
+        "value": ".desavaliar <user> <text>"
+    },
+    "mute": {
+        "name": ":tools: Mute",
+        "value": ".mute <user> [time : 1s | 1m | 1h | 1d]"
+    },
+    "kick": {
+        "name": ":tools: Kick",
+        "value": ".kick <user> [reason]"
+    },
+    "ban": {
+        "name": ":tools: Ban",
+        "value": ".ban <user> [reason]"
+    },
+    "warn": {
+        "name": ":tools: Warn",
+        "value": ".warn <user> [reason]"
+    },
+    "warnings": {
+        "name": ":tools: Warnings",
+        "value": ".warnings <user>"
+    },
+    "unwarn": {
+        "name": ":tools: Unwarn",
+        "value": ".unwarn <user> <number>"
+    },
+    "limpar": {
+        "name": ":tools: Limpar",
+        "value": ".limpar [number]"
+    },
+    "lock": {
+        "name": ":tools: Lock",
+        "value": ".lock"
+    }
+}

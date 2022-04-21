@@ -1,7 +1,6 @@
 from discord.ext import commands
-from utils.mongoconnect import mongoConnect
-from utils.get_json import get_json
-import pprint
+from loaders.mongoconnect import mongoConnect
+from loaders.get_json import get_json
 
 config = get_json("config.json")
 

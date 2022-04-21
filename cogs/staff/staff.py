@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import asyncio
 import datetime
-from utils.mongoconnect import mongoConnect
+from loaders.mongoconnect import mongoConnect
 
 cluster = mongoConnect()
 db = cluster['codify']
@@ -25,7 +25,9 @@ class Staff(commands.Cog):
     #===================================================
 
     @commands.command(pass_context = True)
-    async def mute(self, ctx, member: discord.Member, temp : str = None):
+    async def mute(self, ctx, member: discord.Member = None, temp : str = None):
+        if member == None:
+            await ctx.send(embed=discord.Embed(description='Você precisa informar quem será mutado. Ex: .mute @jv 1h', color=0xff0000))
         if temp == None:
             role = discord.utils.get(ctx.author.server.roles, name='Muted')
             await ctx.remove_roles(member, role)
@@ -68,7 +70,10 @@ class Staff(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(kick_members=True) 
-    async def kick(self, ctx, member : discord.Member, *, reason=None):
+    async def kick(self, ctx, member : discord.Member = None, *, reason=None):
+        if member == None:
+            await ctx.send(embed=discord.Embed(description='Você precisa informar quem será kickado. Ex: .kick @jv mto lindo', color=0xff0000))
+
         embed = discord.Embed(title='Usuario punido', description=f'**Nome:** {member} \n**Guilda:** {ctx.guild}  \n**Motivo:** {reason} \n**Punição:** Kick \n\n**Aplicado por:** \n{ctx.author}', color=0xff0000)
         embed.set_thumbnail(url='https://media.gazetadopovo.com.br/2019/05/29175756/briga-irmaos-martelo-juiz-660x372.jpg')
         try:
@@ -96,7 +101,10 @@ class Staff(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(ban_members=True) 
-    async def ban(self, ctx, member : discord.Member, *, reason=None):
+    async def ban(self, ctx, member : discord.Member = None, *, reason=None):
+        if member == None:
+            await ctx.send(embed=discord.Embed(description='Você precisa informar quem será banido. Ex: .ban @jv mto lindo', color=0xff0000))
+
         embed = discord.Embed(title='Usuario punido', description=f'**Nome:** {member} \n**Guilda:** {ctx.guild} \n**Motivo:** {reason} \n**Punição:** Ban \n\n**Aplicado por:** \n{ctx.author}', color=0xff0000)
         embed.set_thumbnail(url='https://media.gazetadopovo.com.br/2019/05/29175756/briga-irmaos-martelo-juiz-660x372.jpg')
         try:

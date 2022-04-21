@@ -1,13 +1,8 @@
 import discord
 from discord.ext import commands
-import requests as req
 import os
 from dotenv import load_dotenv
-import asyncio
-from random import randint
-import re
-from discord.ext import tasks
-from utils.mongoconnect import mongoConnect
+from loaders.mongoconnect import mongoConnect
 import datetime
 
 load_dotenv()
