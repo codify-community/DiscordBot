@@ -1,5 +1,0 @@
-discord.py
-pymongo
-dnspython
-python-dotenv
-requests
