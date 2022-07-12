@@ -1,4 +1,3 @@
-from turtle import color, title
 import discord
 from discord.ext import commands
 import asyncio
