@@ -3,3 +3,4 @@ pymongo
 dnspython
 python-dotenv
 requests
+pytz==2013b
