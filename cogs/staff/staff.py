@@ -1,13 +1,18 @@
+from turtle import color, title
 import discord
 from discord.ext import commands
 import asyncio
 import datetime
 from loaders.mongoconnect import mongoConnect
+from loaders.get_json import get_json
+import pytz
 
 cluster = mongoConnect()
 db = cluster['codify']
 conta = db['conta']
 site = db['site']
+
+config = get_json("config.json")
 
 class Staff(commands.Cog):
     def __init__(self, bot):
@@ -308,6 +313,37 @@ class Staff(commands.Cog):
 
     @lock.error
     async def lock_error(self, ctx, error):
+        pass
+
+    @commands.command()
+    @commands.has_permissions(kick_members=True)
+    async def changelog(self, ctx, type : str, *, content : str):
+        if type not in ['add', 'remove', 'change']:
+            await ctx.channel.send("Tipo de alteração inválida. Use `add`, `remove` ou `change`")
+            return
+
+        changelog_channel = self.bot.get_channel(config["guild"]["channels"]["changelog"])
+
+        time = datetime.datetime.now(pytz.timezone('America/Sao_Paulo')).replace(microsecond=0,tzinfo=None)
+        time = time.strftime("%d/%m/%Y")
+
+        if type == 'add':
+            styledContent = str(f"""```diff\n+ {content}```""")
+            color = 0x487900
+        elif type == 'remove':
+            styledContent = str(f"""```diff\n- {content}```""")
+            color = 0xff0000
+        elif type == 'change': 
+            styledContent = str(f"""```fix\n% {content}```""")
+            color = 0x94890C
+
+        embed = discord.Embed(description=f'⚠️ **Mudanças referentes a {time}**\n{styledContent}', color=color)
+        embed.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)
+
+        await changelog_channel.send(embed=embed)
+
+    @changelog.error
+    async def changelog_error(self, ctx, error):
         pass
 
 def setup(bot):

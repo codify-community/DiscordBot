@@ -94,5 +94,9 @@
     "lock": {
         "name": ":tools: Lock",
         "value": ".lock"
-    }
+    },
+	"changelog": {
+		"name": ":tools: Changelog",
+		"value": ".changelog <type : add | remove | change> <content>"
+	}
 }
