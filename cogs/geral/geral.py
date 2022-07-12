@@ -41,7 +41,7 @@ class Geral(commands.Cog):
     `unwarn` | Retira aviso do membro
     `limpar` | Apaga as mensagens mais recentes do bate-papo atual
     `lock` | Trava e Destrava um canal
-    `changelog | Cria um change log`''', inline = False)
+    `changelog` | Cria um change log''', inline = False)
             embed.set_footer(text = 'Utilize .help <comando> para mais informações')
         elif comando.lower() in commands_:
             embed = discord.Embed(title=f'Informações complementares do comando {commands_[comando.lower()]["name"]}', color = 0xFECD00)
