@@ -7,7 +7,7 @@ class DontAskForAsk(Cog):
         pass
 
     @command(aliases=["dafa", "npap"])
-    async def nãopergunteparaprguntar(self, cx: Context, membro: Member):
+    async def naopergunteparaperguntar(self, cx: Context, membro: Member):
         await cx.send(
             f"""{membro.mention}, você não precisa perguntar para perguntar.
 
@@ -16,11 +16,11 @@ Assim você se ajuda a ser ajudado.
 
 Exemplos:
 
-❌
+❌Errado
 Alguém consegue me tirar uma dúvida?
 
-✅
-No <#743482860161466509>
+✅ Certo
+No canal <#743482860161466509> ou algum canal de especifico de linguagem como <#743482886468010094>
 
 > Preciso listar todos os itens de um array, mas não estou sabendo como.
 > O que já fiz: https://www.online-python.com/example
