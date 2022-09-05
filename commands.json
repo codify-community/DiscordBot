@@ -98,5 +98,9 @@
 	"changelog": {
 		"name": ":tools: Changelog",
 		"value": ".changelog <type : add | remove | change> <content>"
+	},
+  "nãopergunteparaperguntar": {
+		"name": ":tools: Não pergunte para perguntar.",
+		"value": ".nãopergunteparaperguntar"
 	}
 }
