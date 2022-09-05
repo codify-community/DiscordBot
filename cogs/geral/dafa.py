@@ -1,5 +1,5 @@
 from discord.ext.commands import Cog, Context, command
-from discord.ext.commands.context import Member
+from discord import Member
 
 
 class DontAskForAsk(Cog):
