@@ -1,5 +1,5 @@
-from discord.ext.commands import Cog, Context, command
 from discord import Member
+from discord.ext.commands import Cog, Context, command
 
 
 class DontAskForAsk(Cog):
@@ -20,7 +20,8 @@ Exemplos:
 Alguém consegue me tirar uma dúvida?
 
 ✅ Certo
-No canal <#743482860161466509> ou algum canal de especifico de linguagem como <#743482886468010094>
+Envie sua duvida no fórum <#1019636543486439585> (ou em algum forúm na catego\
+        ria da sua duvida) com as devidas tags.
 
 > Preciso listar todos os itens de um array, mas não estou sabendo como.
 > O que já fiz: https://www.online-python.com/example
