@@ -21,7 +21,7 @@ Alguém consegue me tirar uma dúvida?
 
 ✅ Certo
 Envie sua duvida no fórum <#1019636543486439585> (ou em algum forúm na catego\
-        ria da sua duvida) com as devidas tags.
+ria da sua duvida) com as devidas tags.
 
 > Preciso listar todos os itens de um array, mas não estou sabendo como.
 > O que já fiz: https://www.online-python.com/example
